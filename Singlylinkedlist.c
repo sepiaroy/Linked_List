@@ -20,7 +20,7 @@ struct node* deleteatbegin(struct node *);
 void deleteatend(struct node *);
 void deleteatposition(struct node *,int position);
 void deletenum(struct node *h,int num);
-void merge(struct node *, struct node *);
+struct node* merge(struct node *, struct node *);
 void sort(struct node *);
 struct node* reverse(struct node *);
 
@@ -39,7 +39,7 @@ int main()
     printf("10.Delete a node from the end. \n");
     printf("11.Delete a node from position. \n");
     printf("12.Delete a element. \n");
-    printf("13.Merging two lists into a third list dynamically. \n");
+    printf("13.Merging two lists. \n");
     printf("14.Sort the data items of the list. \n");
     printf("15.Reverse. \n");
     printf("16.Exit.\n");
@@ -95,7 +95,7 @@ int main()
             }
             else
             {
-                printf("The number is present at index %d.", search(head,s));
+                printf("The number is present at position %d.", search(head,s));
             }
         }
         else if(o==4)
@@ -127,6 +127,8 @@ int main()
             scanf("%d", &position);
             if(position==1)        
             head=insertatbegin(head,insert);
+            else if(position > count(head))
+            printf("Position not found.\n");
             else 
             insertatposition(head,insert,position);
 
@@ -144,13 +146,29 @@ int main()
         }
         else if(o==9)
         {
-            head=deleteatbegin(head);
-            display(head);
+            if(head->next==NULL)
+            {
+                head=NULL;
+                printf("List is empty.\n");
+            }
+            else
+            {
+                head=deleteatbegin(head);
+                display(head);
+            }
         }
         else if(o==10)
         {
-            deleteatend(head);
-            display(head);
+            if(head->next==NULL)
+            {
+                head=NULL;
+                printf("List is empty.\n");
+            }
+            else
+            {
+                deleteatend(head);
+                display(head);
+            }
         }
         else if(o==11)
         {
@@ -158,19 +176,50 @@ int main()
             printf("Enter the position to be deleted: ");
             scanf("%d", &position);
             if(position==1)
-            head=deleteatbegin(head);
+            {
+                if(head->next==NULL)
+                {
+                    head=NULL;
+                    printf("List is empty.\n");
+                }
+                else
+                {
+                    head=deleteatbegin(head);
+                    display(head);
+                }
+            }
+            else if(position > count(head))
+            printf("Position not found");
             else
-            deleteatposition(head,position);
-
-            display(head);
+            {
+                deleteatposition(head,position);
+                display(head);
+            }
         }
         else if(o==12)
         {
             int num;
             printf("Enter the element to be deleted: ");
             scanf("%d", &num);
-            deletenum(head,num);
-            display(head);
+            
+            if(head->data==num)
+            {
+                if(head->next==NULL)
+                {
+                    head=NULL;
+                    printf("List is empty.\n");
+                }
+                else
+                {
+                    head=deleteatbegin(head);
+                    display(head);
+                }
+            }
+            else
+            {
+                deletenum(head,num);
+                display(head);
+            }
         }        
         else if(o==13)
         {
@@ -194,7 +243,10 @@ int main()
                 op--;
             }
 
-            merge(head, head2);
+            head=merge(head, head2);
+
+            printf("\nThe merged list is:\n");
+            display(head);
         }
         else if(o==14)
         {
@@ -302,14 +354,14 @@ struct node* insertatbegin(struct node *h,int insert)
 
     if(newnode==NULL)
     {
-        printf("Memory is not allocated");
+        printf("Memory is not allocated.\n");
         exit(0);
-    }
+    } 
     newnode->data=insert;
 
     if(h==NULL)
     {
-        printf("The list is empty");
+        printf("The list is empty. Enter 1 to create linked list.\n");
     }
     else
     {
@@ -328,7 +380,7 @@ void insertatend(struct node *h,int insert)
 
     if(newnode==NULL)
     {
-        printf("Memory is not allocated");
+        printf("Memory is not allocated.\n");
         exit(0);
     }
 
@@ -337,20 +389,16 @@ void insertatend(struct node *h,int insert)
 
     if(h==NULL)
     {
-        printf("The list is empty");
+        printf("The list is empty. Enter 1 to create linked list.\n");
     }
     else
     {
         current=h;
-        while(current!=NULL)
+        while(current->next!=NULL)
         {
-            if(current->next==NULL)
-            {
-                current->next=newnode;
-                current=newnode;
-            }
-        current=current->next;
+            current=current->next;
         }
+        current->next=newnode;
         printf("\nNode inserted.\n");    
     }
 }    
@@ -363,7 +411,7 @@ void insertatposition(struct node *h,int insert, int position)
 
     if(newnode==NULL)
     {
-        printf("Memory is not allocated");
+        printf("Memory is not allocated.\n");
         exit(0);
     }
  
@@ -371,7 +419,7 @@ void insertatposition(struct node *h,int insert, int position)
     struct node *temp;
     if(h==NULL)
     {
-        printf("The list is empty");
+        printf("The list is empty.\n");
     }
     else
     {
@@ -390,7 +438,6 @@ void insertatposition(struct node *h,int insert, int position)
         }
         printf("\nNode inserted.\n");
     }        
-
 }
 
 void insertafternode(struct node *h,int insert,int n)
@@ -400,7 +447,7 @@ void insertafternode(struct node *h,int insert,int n)
 
     if(newnode==NULL)
     {
-        printf("Memory is not allocated");
+        printf("Memory is not allocated.\n");
         exit(0);
     }
  
@@ -409,7 +456,7 @@ void insertafternode(struct node *h,int insert,int n)
     struct node *temp;
     if(h==NULL)
     {
-        printf("The list is empty");
+        printf("The list is empty.\n");
     }
     else
     {
@@ -425,6 +472,10 @@ void insertafternode(struct node *h,int insert,int n)
             }          
             current=current->next;
         }
+
+        if(current==NULL)
+        printf("Node not found.\n");
+        else
         printf("\nNode inserted.\n");
     }        
 }
@@ -435,7 +486,7 @@ struct node* deleteatbegin(struct node *h)
 
     if(h==NULL)
     {
-        printf("The list is empty");
+        printf("The list is empty.\n");
     }
     else
     {
@@ -452,11 +503,11 @@ void deleteatend(struct node *h)
     struct node *temp;
     if(h==NULL)
     {
-        printf("The list is empty");
+        printf("The list is empty.\n");
     }
     else
     {
-        temp=h;;
+        temp=h;
         while(temp->next!=NULL)
         {
             current=temp;
@@ -476,22 +527,23 @@ void deleteatposition(struct node *h,int position)
 
     if(h==NULL)
     {
-        printf("The list is empty");
+        printf("The list is empty.\n");
     }
     else
     {
         temp=h;
         while(temp!=NULL)
         {
-        if(k==position-1)
-        {
-            current=temp;
+            if(k==position-1)
+            {
+                current=temp;
+                temp=temp->next;        
+                break;
+            }
             temp=temp->next;        
-            break;
+            k++;
         }
-        temp=temp->next;        
-        k++;
-        }
+        
         current->next=temp->next;
         free(temp);
         printf("\nNode deleted\n");   
@@ -504,12 +556,12 @@ void deletenum(struct node *h,int num)
 
     if(h==NULL)
     {
-        printf("The list is empty");
+        printf("The list is empty.\n");
     }
     else
     {
         temp=h;
-        while(temp!=NULL)
+        while(temp->next!=NULL)
         {
             if(temp->next->data==num)
             {
@@ -517,11 +569,19 @@ void deletenum(struct node *h,int num)
                 temp=temp->next;
                 break;
             }
-        temp=temp->next;        
+            temp=temp->next;        
         }
-    current->next=temp->next;
-    free(temp);
-    printf("\nNode deleted\n");
+
+        if(temp->next==NULL && temp->data!=num)
+        {
+            printf("Node not found.\n");
+        }        
+        else
+        {
+            current->next=temp->next;
+            free(temp);
+            printf("\nNode deleted\n");
+        }
     }
 }
 
@@ -533,7 +593,7 @@ void sort(struct node *h)
 
     if(h==NULL)
     {
-        printf("The list is empty");
+        printf("The list is empty.\n");
     }
     else
     {
@@ -554,95 +614,46 @@ void sort(struct node *h)
         }
     printf("\nList sorted.\n");    
     }    
-
-
-        // struct node *current = head, *index = NULL;  
-        // int temp;  
-          
-        // if(head == NULL) {  
-        //     return;  
-        // }  
-        // else {  
-        //     while(current != NULL) {  
-        //         //Node index will point to node next to current  
-        //         index = current->next;  
-                  
-        //         while(index != NULL) {  
-        //             //If current node's data is greater than index's node data, swap the data between them  
-        //             if(current->data > index->data) {  
-        //                 temp = current->data;  
-        //                 current->data = index->data;  
-        //                 index->data = temp;  
-        //             }  
-        //             index = index->next;  
-        //         }  
-        //         current = current->next;  
-        //     }      
-        // }
 }
 
-void merge(struct node *h, struct node *h2)
+struct node* merge(struct node *h, struct node *h2)
 {
-    struct node *mergedhead=NULL;
-    struct node *m=NULL;
     printf("\nThe list 1 is: \n");
     display(h);
     printf("\nThe list 2 is: \n");
     display(h2);
-
-    current=h;
-    while(current!=NULL)
-    {
-        struct node *newnode;
-        newnode=(struct node *)malloc(sizeof(struct node));
-        
-        if(newnode==NULL)
-        {
-        printf("Memory is not allocated");
-        exit(0);
-        }
-
-        if(mergedhead==NULL)
-        {
-            mergedhead=newnode;
-            m=newnode;  
-        }
-        else 
-        {     
-            m->next=newnode;
-            m=newnode;    
-        } 
-   
-        m->data=current->data;
-        current=current->next;       
+    
+    if(h == NULL){
+        h=h2;
     }
-
-    current=h2;
-    while(current!=NULL)
+    else
     {
-        struct node *newnode;        
-        newnode=(struct node *)malloc(sizeof(struct node));
+        current=h;
+        while(current->next!=NULL)
+        {
+            current=current->next;       
+        }
 
-        m->next=newnode;
-        m=newnode;
-        m->data=current->data;  
-        current=current->next;                     
-    }    
-
-    m->next=NULL;
-
-    printf("\nThe merged list is:\n");
-    display(mergedhead);
+        current->next=h2;
+    }
+    return h;
 }
 
-struct node* reverse(struct node *head)
+struct node* reverse(struct node *h)
 {
     struct node *p1, *p2, *p3;
-    if (head->next == NULL)
+    
+    if(h == NULL)
     {
-        return;
+        printf("List is empty.\n");
+        return 0;
     }
-    p1 = head;
+    else if (h->next == NULL)
+    {
+        return 0;
+    }
+    
+    p1 = h;
     p2 = p1->next;
     p3 = p2->next;
     p1->next = NULL;
@@ -654,80 +665,5 @@ struct node* reverse(struct node *head)
         p3 = p3->next;
     }
     p2->next = p1;
-    head = p2;
+    h = p2;
 }
-
-// void insertinmerge(int insert)
-// {
-//     struct node *newnode;
-//     newnode=(struct node *)malloc(sizeof(struct node));
-
-//     if(newnode==NULL)
-//     {
-//         printf("Memory is not allocated");
-//         exit(0);
-//     }
-
-//     newnode->data=insert;
-//     newnode->next=NULL;
-
-//     if(mergedhead==NULL)
-//     {
-//         mergedhead=newnode;
-//         current=newnode;
-//     }
-//     else
-//     {
-//         current=mergedhead;
-//         while(current!=NULL)
-//         {
-//             if(current->next==NULL)
-//             {
-//                 current->next=newnode;
-//                 current=newnode;
-//             }
-//         current=current->next;
-//         }
-//         printf("\nNode inserted.\n");    
-//     }
-// }  
-// void mergesort(struct node *h, struct node *h2){
-
-
-//     struct node *m1=NULL, *m2=NULL;
-//     printf("\nThe list 1 is: \n");
-//     display(h);
-//     printf("\nThe list 2 is: \n");
-//     display(h2);
-
-//     m1=h;
-//     m2=h2;
-//     while(m1!=NULL && m2!=NULL){
-//         if(m1->data>m2->data){
-//         insertatend(m2->data);
-//         m2=m2->next;
-//         }
-//         else if(m1->data<m2->data){
-//         insertatend(m1->data); 
-//         m1=m1->next;
-//         }
-//         else{
-//         insertatend(m1->data); 
-//         m1=m1->next;
-//         m2=m2->next;
-//         }
-//     }
-//     while(m1!=NULL)
-//     {
-//         insertatend(m1->data);
-//         m1=m1->next;
-//     }    
-//     while(m2!=NULL)
-//     {
-//         insertatend(m2->data);
-//         m2=m2->next;
-//     }
-
-//     printf("\nThe merged list is:\n");
-//     display(mergedhead);
-// }
