@@ -237,6 +237,7 @@ int main()
             printf("Enter data to be allocated in node: ");
             scanf("%d", &head2->data);
             head2->next=NULL;
+            head2->prev=NULL;
             op--;
 
             while(op>0)
