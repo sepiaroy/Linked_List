@@ -660,33 +660,31 @@ struct node* reverse(struct node *h)
     
     struct node *p1, *p2, *p3;
     
-    p1 = h;
-    p2 = p1->next;
-    p3 = p2->next;
-    
-    p1->next = NULL;
-    p1->prev = p2;
-    
+    p1=h;
+    p2=p1->next;
+    p3=p2->next;
 
-    p2->prev = h;
+    p1->next=h->prev; 
+    p1->prev=p2;
+    h->prev=p2; 
     
-    while (p3 != h)
+    while(p3!=h)
     {
-        p2->next = p1;
-        p2->prev = p3; 
+        p2->next=p1;
+        p2->prev=p3; 
         
-        p1 = p2;
-        p2 = p3;
-        p3 = p3->next;
+        p1=p2;
+        p2=p3;
+        p3=p3->next;
     }
     
-    p2->next = p1;
-    p2->prev = h;
+    p2->next=p1;
+    p2->prev=h;
     
-    h->next = p2;
-    h->prev = p2->prev;
+    h->next=p2;
+    h->prev=p2->prev;
     
-    h = p2;
+    h=p2;
     
     return h; 
 }
